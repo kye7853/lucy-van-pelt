@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <unistd.h>
 #include <algorithm>
+#include <limits.h>
 
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 
@@ -23,6 +24,7 @@ void blockneginput();
 int digitlimit(string str, int limit);
 int match(string str);
 bool cistrcmp(const string& str1, const string& str2);
+void endmsg();
 
 string name[500];
 int current, accnum = 0;
@@ -70,21 +72,7 @@ label:
 				}
 				break;
 			case 0:
-				cout << "\nTotal Number of Accounts : " << accnum << endl;
-				cout << "Acc No.	Name		DOB	Balance\n";
-				for(int i=0;i<accnum;i++) {
-					cout << setw(2) << i+1 << "	";
-					if(name[i].size()<8) {
-						cout << name[i] << "		";
-					}
-					else {cout << name[i] << "	";}
-					cout << setw(6) << days[i] << "	";
-					cout << balance[i] << " won\n";
-				}
-				sleep(1);
-				
-				cout << "\nThank you for using SUNG YOUNG BANK banking system.\nGood-bye!\n";
-				
+				endmsg();				
 				return 0;
 		}
 		if(initreq < 3 && initreq >= 1) {
@@ -306,7 +294,9 @@ void deposit() {
 }
 
 void checkBalance() {
-	cout << "\nYour current balance is " << balance[current] << " won.\n";
+	cout << "\n*****************************************\n\n";
+	cout << "     Current Balance : " << balance[current] <<" won\n\n";
+	cout << "*****************************************\n";
 	sleep(1);
 }
 
@@ -396,9 +386,9 @@ void record() {
 }
 
 void display(string str, int amount) {
-	cout << endl << "*****************************************\n\n";
-	cout << "           SUNG YOUNG BANK LTD.\n\n";
-	cout << "            "<< str << amount <<" won\n\n";
+	cout << "\n*****************************************\n\n";
+	cout << "          SUNG YOUNG BANK LTD.\n\n";
+	cout << "           "<< str << " " << amount <<" won\n\n";
 	cout << "*****************************************\n\n";
 	sleep(1);
 	cout << "You want to " << str << " " << amount << " won. Is this correct? (y/n) : ";
@@ -446,4 +436,27 @@ bool cistrcmp(const string& str1, const string& str2) {		//case insensitive comp
         }
     }
     return true;
+}
+
+void endmsg() {
+	cout << "\nTotal Number of Accounts : " << accnum << endl;
+	
+	cout << "\n*********************************************\n\n";
+	cout << "           SUNG YOUNG BANK LTD.\n\n";
+	cout << "Acc No.	Name		DOB	Balance\n";
+	for(int i=0;i<accnum;i++) {
+		cout << setw(2) << i+1 << "	";
+		if(name[i].size()<8) {
+			cout << name[i] << "		";
+		}
+		else {cout << name[i] << "	";}
+		cout << setw(6) << days[i] << "	";
+		cout << balance[i] << " won\n";
+	}
+	cout << "\n*********************************************\n\n";
+	sleep(1);
+	
+	cout << "\nThank you for using SUNG YOUNG BANK banking system.\nGood-bye!\n";
+	
+	return;
 }

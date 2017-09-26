@@ -8,7 +8,9 @@
 #include <algorithm>
 #include <limits.h>
 
-/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+/* C++ Programming / Professor Minkyu Ahn **
+**       Bank ATM System Application      **
+** 2017-09-28      21300139 Young Eun Kim */
 
 using namespace std;
 

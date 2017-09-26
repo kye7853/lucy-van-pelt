@@ -12,15 +12,18 @@
 
 using namespace std;
 
+void executeATM();
+void menuSwitch();
 void openAccount();
 int login(int e);
 void deposit();
 void checkBalance();
 void transfer();
 void withdraw();
-void record();
 void display(string str, int amount);
-void blockneginput();
+int blockneginput(int amount, string str);
+int exceed(int amount, string str);
+void confirmation(string str, int amount);
 int digitlimit(string str, int limit);
 int match(string str);
 bool cistrcmp(const string& str1, const string& str2);
@@ -29,14 +32,19 @@ void endmsg();
 string name[500];
 int current, accnum = 0;
 int pins[50], days[50], balance[50];
-string records[20][50];
 
 int main(int argc, char** argv) {
+	fill_n(balance, 50, 100000);
+	
+	executeATM();
+	
+	return 0;
+}
 
-	fill_n(balance, 50, 100000);	
-	int initreq, request;
-
-label:	
+void executeATM() {
+	int initreq;
+	
+  label:	
 	do{
 		cout << "\n*********** Welcome to SUNG YOUNG BANK! ************\n";
 		cout << "*                                                  *\n";
@@ -74,71 +82,73 @@ label:
 				break;
 			case 0:
 				endmsg();				
-				return 0;
+				return;
 		}
 		if(initreq < 3 && initreq >= 1) {
-		  functions:
-			do {
-				cout << "\n****************************************************\n";
-				cout << "*                                                  *\n";
-				cout << "*  1. Deposit Cash                                 *\n";
-				cout << "*                                                  *\n";
-				cout << "*  2. Check Account Balance                        *\n";
-				cout << "*                                                  *\n";
-				cout << "*  3. Transfer to Another Account                  *\n";
-				cout << "*                                                  *\n";
-				cout << "*  4. Withdraw Cash                                *\n";
-				cout << "*                                                  *\n";
-				cout << "*  5. Transaction Record Enquiry                   *\n";
-				cout << "*                                                  *\n";
-				cout << "*  0. Log Out                                      *\n";
-				cout << "*                                                  *\n";
-				cout << "****************************************************\n\n";
-				
-				cout << "Please select a number from above (0~5) : ";
-				cin >> request;
-				while (cin.fail()) {
-				    cin.clear();	// clear input buffer to restore cin to a usable state
-				    cin.ignore(INT_MAX, '\n');	// ignore last input
-				    cout << "You can only enter numbers from 0 to 5.\n";
-				    cout << "Please select a number from above (0~5) : ";
-				    cin >> request;
-				}
-				
-				switch(request) {
-			    case 1 :
-			    	cin.ignore();
-					deposit();
-					break;			
-				case 2 :
-			    	cin.ignore();
-					checkBalance();
-					break;
-				case 3 :
-			    	cin.ignore();
-			    	if(accnum<2) {
-			    		cout << "Only one account opened so far. There is no recepient to transfer to yet.\n";
-			    		sleep(1);
-			    		goto functions;
-					}
-					transfer();
-					break;
-				case 4 :
-			    	cin.ignore();
-					withdraw();
-					break;
-				case 5 :
-			    	cin.ignore();
-					record();
-					break;
-				}
-				cout << endl;
-			} while(request != 0);
-			cout << "You are logged out.\n";
-			current = -1;
-			sleep(1);
+		  menuSwitch();
 		}
 	} while(1);
+	return;
+}
+
+void menuSwitch() {
+	int request;
+	
+  functions:
+	do {
+		cout << "\n****************************************************\n";
+		cout << "*                                                  *\n";
+		cout << "*  1. Deposit Cash                                 *\n";
+		cout << "*                                                  *\n";
+		cout << "*  2. Check Account Balance                        *\n";
+		cout << "*                                                  *\n";
+		cout << "*  3. Transfer to Another Account                  *\n";
+		cout << "*                                                  *\n";
+		cout << "*  4. Withdraw Cash                                *\n";
+		cout << "*                                                  *\n";
+		cout << "*  0. Log Out                                      *\n";
+		cout << "*                                                  *\n";
+		cout << "****************************************************\n\n";
+		
+		cout << "Please select a number from above (0~4) : ";
+		cin >> request;
+		while (cin.fail()) {
+		    cin.clear();	// clear input buffer to restore cin to a usable state
+		    cin.ignore(INT_MAX, '\n');	// ignore last input
+		    cout << "You can only enter numbers from 0 to 4.\n";
+		    cout << "Please select a number from above (0~4) : ";
+		    cin >> request;
+		}
+		
+		switch(request) {
+	    case 1 :
+	    	cin.ignore();
+			deposit();
+			break;		
+		case 2 :
+	    	cin.ignore();
+			checkBalance();
+			break;
+		case 3 :
+	    	cin.ignore();
+	    	if(accnum<2) {
+	    		cout << "Only one account opened so far. There is no recepient to transfer to yet.\n";
+	    		sleep(1);
+	    		goto functions;
+			}
+			transfer();
+			break;
+		case 4 :
+	    	cin.ignore();
+			withdraw();
+			break;
+		}
+		cout << endl;
+	} while(request != 0);
+	cout << "You are logged out.\n";
+	current = -1;
+	sleep(1);
+	return;
 }
 
 void openAccount() {
@@ -272,7 +282,13 @@ void deposit() {
 	string confirm;
 	cout << "\nEnter the Amount to Deposit : ";
 	cin >> deposit;
-	cin.ignore();
+	while(cin.fail()) {
+		cin.clear();
+		cin.ignore();
+		cout << "Please input numbers only. Enter the Amount to deposit : " << endl;
+		cin >> deposit;
+	}
+	deposit = blockneginput(deposit, "deposit");
 	display("Deposit", deposit);
   again:
 	cin >> confirm;
@@ -288,7 +304,7 @@ void deposit() {
 		sleep(1);
 	}
 	else {
-		cout << "Please answer with 'y' or 'n'.\nYou want to deposit " << deposit << " won. Is this correct? (y/n) : ";
+		confirmation("deposit", deposit);
 		goto again;
 	}
 	return;
@@ -325,6 +341,8 @@ void transfer() {
 		    cout << "Please input numbers only. Enter the Amount to transfer : " << endl;
 		    cin >> transfer;
 		}
+		transfer = blockneginput(transfer, "transfer");
+		transfer = exceed(transfer, "transfer");
 	}
 	display("Transfer", transfer);
   reask:
@@ -342,7 +360,7 @@ void transfer() {
 		sleep(1);
 	}
 	else {
-		cout << "Please answer with 'y' or 'n'.\nYou want to transfer " << transfer << " won. Is this correct? (y/n) : ";
+		confirmation("transfer", transfer);
 		goto reask;
 	}
 	return;
@@ -361,6 +379,8 @@ void withdraw() {
     cout << "Please input numbers only. Enter the Amount to Withdraw : " << endl;
     cin >> withdraw;
 	}
+	withdraw = blockneginput(withdraw, "withdraw");
+	withdraw = exceed(withdraw, "withdraw");
 	display("Withdraw", withdraw);
   redo:
 	cin >> confirm;
@@ -375,16 +395,12 @@ void withdraw() {
 		sleep(1);
 	}
 	else {
-		cout << "Please answer with 'y' or 'n'.\nYou want to withdraw " << withdraw << " won. Is this correct? (y/n) : ";
+		confirmation("withdraw", withdraw);
 		goto redo;
 	}
 	checkBalance();
 	sleep(1);
 	return;
-}
-
-void record() {
-	
 }
 
 void display(string str, int amount) {
@@ -395,10 +411,27 @@ void display(string str, int amount) {
 	sleep(1);
 	cout << "You want to " << str << " " << amount << " won. Is this correct? (y/n) : ";
 	return;
-};
+}
 
-void blockneginput() {
-	
+int blockneginput(int amount, string str) {
+	while (amount < 0 || cin.fail()) {
+		cout << "Please input positive amount. Enter the Amount to " << str << " : ";
+		cin >> amount;
+	}
+	return amount;
+}
+
+int exceed(int amount, string str) {
+	while (amount > balance[current] || cin.fail()) {
+		cout << "The amount exceeds your current balance.\nYour current balance is " << balance[current] << " won. Enter the Amount to " << str << " : ";
+		cin >> amount;
+	}
+	return amount;
+}
+
+void confirmation(string str, int amount) {
+	cout << "Please answer with 'y' or 'n'.\nYou want to " << str << " " << amount << " won. Is this correct? (y/n) : ";
+	return;
 }
 
 int digitlimit(string str, int limit) {

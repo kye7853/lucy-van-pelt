@@ -30,10 +30,10 @@ int pins[50], days[50], balance[50];
 
 int main(int argc, char** argv) {
 
-	fill_n(balance, 50, 100000);
+	fill_n(balance, 50, 100000);	
 	int initreq, request;
 
-label:
+label:	
 	do{
 		cout << "\n*********** Welcome to SUNG YOUNG BANK! ************\n";
 		cout << "*                                                  *\n";
@@ -42,9 +42,9 @@ label:
 		cout << "*  0. Exit the SYB Banking System                  *\n";
 		cout << "*                                                  *\n";
 		cout << "****************************************************\n";
-
+		
 		cout << "\nPlease select from above (0~2) : ";
-
+		
 		cin >> initreq;
 		while (cin.fail()) {
 			    cin.clear();	// clear input buffer to restore cin to a usable state
@@ -53,7 +53,7 @@ label:
 			    cout << "Please select from above (0~2) : ";
 			    cin >> initreq;
 		}
-
+		
 		switch(initreq) {
 			case 1:
 				cin.ignore();
@@ -82,9 +82,9 @@ label:
 					cout << balance[i] << " won\n";
 				}
 				sleep(1);
-
+				
 				cout << "\nThank you for using SUNG YOUNG BANK banking system.\nGood-bye!\n";
-
+				
 				return 0;
 		}
 		if(initreq < 3 && initreq >= 1) {
@@ -105,7 +105,7 @@ label:
 				cout << "*  0. Log Out                                      *\n";
 				cout << "*                                                  *\n";
 				cout << "****************************************************\n\n";
-
+				
 				cout << "Please select a number from above (0~5) : ";
 				cin >> request;
 				while (cin.fail()) {
@@ -115,12 +115,12 @@ label:
 				    cout << "Please select a number from above (0~5) : ";
 				    cin >> request;
 				}
-
+				
 				switch(request) {
 			    case 1 :
 			    	cin.ignore();
 					deposit();
-					break;
+					break;			
 				case 2 :
 			    	cin.ignore();
 					checkBalance();
@@ -155,7 +155,7 @@ label:
 void openAccount() {
 	string owner, birth, pin;
 	int cnt, bday, pinno;
-
+	
 	cout << "Please fill in the form below.\n";
 	cout << "Name : ";
 	do {
@@ -169,7 +169,7 @@ void openAccount() {
 			cout << "\nWelcome! " << owner << ".\n\n";
 		}
 	} while(string::npos != owner.find_first_of("0123456789"));
-
+	
 	do {
 		cout << "Date of birth (YYMMDD) : ";
 		cin >> birth;
@@ -177,10 +177,10 @@ void openAccount() {
 		cnt = 0;
 		cnt = digitlimit(birth, 6);
 	} while(cnt != 6);
-
+	
 	istringstream ss(birth);
 	ss >> bday;
-
+	
 	do {
 		cout << "Please set a 4-digits PIN : ";
 		cin >> pin;
@@ -188,10 +188,10 @@ void openAccount() {
 		cnt = 0;
 		cnt = digitlimit(pin, 4);
 	} while(cnt != 4);
-
+	
 	istringstream iss(pin);
 	iss >> pinno;
-
+	
 	accnum++;
 	days[accnum-1] = bday;
 	pins[accnum-1] = pinno;
@@ -201,7 +201,7 @@ void openAccount() {
 	cout << "\nYou are logged in.\n";
 	current = accnum-1;
 	sleep(1);
-
+	
 	return;
 }
 
@@ -209,11 +209,11 @@ int login(int e) {
 	int ans, accno, pin, error = 0;
 	char exit;
 	string logname;
-
+	
 	cout << "\nLog in by 1.Account Number + PIN / 2.Name + PIN : ";
 	cin >> ans;
 	cin.ignore();
-
+	
 	switch(ans) {
 		case 1:
 		  second:
@@ -226,7 +226,7 @@ int login(int e) {
 			}
 			cout << "Please enter your 4-digit PIN : ";
 			cin >> pin;
-			cin.ignore();
+			cin.ignore();		
 			if(pin == pins[accno-1]) {
 				cout << "\nWelcome back, " << name[accno-1] << "! You are logged in.\n";
 				current = accno-1;
@@ -273,7 +273,7 @@ int login(int e) {
 				cout << "Please Try Again. (" << error << "/3)\n\n";
 				goto third;
 			}
-			break;
+			break;			
 	}
 	return 2;
 }
@@ -363,7 +363,7 @@ void withdraw() {
 
 	cout << "\nEnter the Amount to Withdraw : ";
 	cin >> withdraw;
-
+	
 	while(cin.fail()) {
 	cin.clear();
     cin.ignore();
@@ -393,7 +393,6 @@ void withdraw() {
 }
 
 void record() {
-	//이건 어디에 쓰는 건가요?
 }
 
 void display(string str, int amount) {
@@ -407,7 +406,7 @@ void display(string str, int amount) {
 };
 
 void blockneginput() {
-
+	
 }
 
 int digitlimit(string str, int limit) {

@@ -331,8 +331,8 @@ void transfer() {
 		while(cin.fail()) {
 			cin.clear();
 		    cin.ignore();
-		    cout << "Please input numbers only. Enter the Amount to Withdraw : " << endl;
-		    cin >> withdraw;
+		    cout << "Please input numbers only. Enter the Amount to transfer : " << endl;
+		    cin >> transfer;
 		}
 	}
 	display("Transfer", transfer);
@@ -351,7 +351,7 @@ void transfer() {
 		sleep(1);
 	}
 	else {
-		cout << "Please answer with 'y' or 'n'.\nYou want to transfer " << deposit << " won. Is this correct? (y/n) : ";
+		cout << "Please answer with 'y' or 'n'.\nYou want to transfer " << transfer << " won. Is this correct? (y/n) : ";
 		goto reask;
 	}
 	return;
@@ -384,7 +384,7 @@ void withdraw() {
 		sleep(1);
 	}
 	else {
-		cout << "Please answer with 'y' or 'n'.\nYou want to withdraw " << deposit << " won. Is this correct? (y/n) : ";
+		cout << "Please answer with 'y' or 'n'.\nYou want to withdraw " << withdraw << " won. Is this correct? (y/n) : ";
 		goto redo;
 	}
 	checkBalance();

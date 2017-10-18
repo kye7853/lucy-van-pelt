@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <stdlib.h>
 #include <string.h>
+#include <vector>
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 
 using namespace std;
@@ -15,7 +16,7 @@ struct Book{
 	string author;
 	string edition;
 	string borrower;
-	int lentDays;
+	string lentDays;
 };
 
 const string delims(";,:. \n\t");

@@ -29,24 +29,26 @@ inline bool isDelim(char c) {
 inline string parseBookinfo(string s) {
 
 	string delimiter = "; ";
-	char* bookInfoArray = new char[6];
+	vector<string> bookInfoVector(3);
+//	char* bookInfoArray = new char[6];
 	size_t pos = 0;
 	string info;
 	int j = 0;
 
 	while ((pos = s.find(delimiter)) != string::npos) {
 	    info = s.substr(0, pos);
-		char* infoChar = new char[info.length()];
-		strcpy(infoChar, info);
-		bookInfoArray[j] = infoChar;
-		delete infoChar;
+		bookInfoVector[j] = info;
+	//	char* infoChar = new char[info.length()];
+	//	strcpy(infoChar, info);
+	//	bookInfoArray[j] = infoChar;
+	//	delete infoChar;
 		j++;
 	   // cout << info << endl;
 	    s.erase(0, pos + delimiter.length());
 	}
 
-	Book bookInfo = {bookInfoArray[0], bookInfoArray[1], bookInfoArray[2], bookInfoArray[3], bookInfoArray[4], bookInfoArray[5]};
-	delete bookInfoArray;
+	Book bookInfo = {bookInfoVector[0], bookInfoVector[1], bookInfoVector[2], bookInfoVector[3], bookInfoVector[4], bookInfoVector[5]};
+	//delete bookInfoArray;
 	tempBookList[lineCount] = bookInfo;
 
 }

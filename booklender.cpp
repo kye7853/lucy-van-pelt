@@ -9,9 +9,9 @@ using namespace std;
 
 struct Book{
 	string title;
-	int pubYear;
+	string pubYear;
 	string author;
-	int edition;
+	string edition;
 	string borrower;
 	int lentDays;
 };

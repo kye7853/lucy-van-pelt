@@ -36,7 +36,7 @@ inline string parseBookinfo(string s) {
 
 	while ((pos = s.find(delimiter)) != string::npos) {
 	    info = s.substr(0, pos);
-		char* infoChar = new char[strlen(info)];
+		char* infoChar = new char[info.length()];
 		strcpy(infoChar, info);
 		bookInfoArray[j] = infoChar;
 		delete infoChar;

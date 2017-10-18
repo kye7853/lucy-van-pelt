@@ -34,7 +34,10 @@ inline string parseBookinfo(string s) {
 
 	while ((pos = s.find(delimiter)) != string::npos) {
 	    info = s.substr(0, pos);
-		bookInfoArray[j] = info;
+		char* infoChar = new char[strlen(info)];
+		strcpy(infoChar, info);
+		bookInfoArray[j] = infoChar;
+		delete infoChar;
 		j++;
 	   // cout << info << endl;
 	    s.erase(0, pos + delimiter.length());

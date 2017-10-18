@@ -27,7 +27,7 @@ inline bool isDelim(char c) {
     return false;
 }
 
-inline string parseBookinfo(string s) {
+inline string parseBookInfo(string s,Book* tempBookList,int lineCount) {
 
 	string delimiter = "; ";
 	vector<string> bookInfoVector(3);
@@ -66,16 +66,18 @@ int main(int argc, char** argv) {
 	{
 		for(int i=0; !myFile.eof(); i++) {
 			getline(myFile,bookInfoString);
-			parseBookInfo(bookInfoString);
+			parseBookInfo(bookInfoString,tempBookList,lineCount);
 			//getline(myfile, line[i]);
 			//cout << line[i] << "\n";
 	    	lineCount++;
 	    }
 		myFile.close();
-		Book* bookList = new Book[lineCount];
-		copy(tempBookList,tempBookList[lineCount], bookList);
-		delete tempBookList;
-		printf(bookList[0]);
+		vector<Book> bookList(lineCount);
+		//Book* bookList = new Book[lineCount];
+	//	copy(tempBookList[0],tempBookList[lineCount], bookList);
+	//	delete tempBookList;
+	//	cout <<bookList[0].title;
+	cout << tempBookList[0].title;
 	}
     else cout << "Unable to open file";		//message when file not opened
 

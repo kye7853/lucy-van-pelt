@@ -25,6 +25,7 @@ string toLowerCase(string str);
 
 /*Load*/
 void load();
+void showList();
 void loadBookFromTxtFile(ifstream& myFile);
 void parseBookInfo(string s, int lineCount);
 /*Insert*/
@@ -75,6 +76,8 @@ int main(int argc, char** argv) {
 	cin >> command;
 	cout << toLowerCase(command);
 
+	showList();
+
 	return 0;
 }
 
@@ -90,6 +93,15 @@ void commandSwitch() {
 	cout << "7. EXIT\n\n";
 	cout << "---------------------------------------------------------\n";
 	cout << ">>";
+
+	return;
+}
+
+void showList() {
+	cout << "======================================== Book Catalog ========================================\n";
+	cout << "Title\tAuthor\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
+	cout << bookVector;
+	cout << "============================================ End =============================================\n";
 
 	return;
 }

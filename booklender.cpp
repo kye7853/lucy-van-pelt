@@ -48,6 +48,7 @@ void eexit();
 /*Display*/
 void showBookList();
 void showSuccess(string function, Book book);
+void showLentBooks();
 
 /*Util*/
 vector<string> parseInput(string s, int i);
@@ -170,8 +171,9 @@ bool valiidateCommand(vector<string> commandVector) {
 }
 
 void notifyUnreturnedBooks() {
-	string notifyMessage = "";
-
+	string notifyMessage;
+	notifyMessage = "";
+	//cout << "*************************" << notifyMessage;
 	if (booksNeedToBeReturned.empty()) {
 		return;
 	}
@@ -304,20 +306,17 @@ void passDay() {
 		lentDaysInt = stoi(bookVector[i].lentDays);
 		lentDaysInt -= 1;
 		bookVector[i].lentDays = to_string(lentDaysInt);
-		if (lentDaysInt < 1) {
+		string bookTitle = bookVector[i].title;
+		if (lentDaysInt == 0) {
 			booksNeedToBeReturned.push_back(bookVector[i]);
+		}
+		else if (lentDaysInt < 0) {
+			vector<Book>::iterator it = find_if(booksNeedToBeReturned.begin(), booksNeedToBeReturned.end(), [&bookTitle](const Book& obj) {return obj.title == bookTitle; });
+			(*it).lentDays = to_string(lentDaysInt);
 		}
 		bookVector[i].lentDays = to_string(lentDaysInt);
 	}
 	showLentBooks();
-}
-
-void showLentBooks() {
-	for (Book b : bookVector) {
-		if (b.borrower != "None") {
-			cout << b;
-		}
-	}
 }
 
 /***********PRINT***********/
@@ -348,6 +347,17 @@ void showSuccess(string function, Book book) {
 	cout << "============================================ End =============================================\n";
 
 	return;
+}
+
+void showLentBooks() {
+	cout << "======================================== Book Catalog ========================================\n";
+	cout << "Title\tAuthor\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
+	for (Book b : bookVector) {
+		if (b.borrower != "None") {
+			cout << b;
+		}
+	}
+	cout << "============================================ End =============================================\n";
 }
 
 /***********Utils***********/

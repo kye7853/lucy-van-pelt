@@ -118,6 +118,18 @@ void commandSwitch() {
 	return;
 }
 
+string toLowerCase(string str) {
+	int i = 0;
+	char c;
+	while (str[i])
+	{
+		c = str[i];
+		str[i] = tolower(c);
+		i++;
+	}
+	return str;
+};
+
 void callFunction(istream& in) {
 	string command = "";
 	vector<string> commandVector;
@@ -227,7 +239,7 @@ void parseBookInfo(string s, int lineCount) {
 
 	bookInfoVector = parseInput(s, 6);
 	Book book = { bookInfoVector[0], bookInfoVector[1], bookInfoVector[2], bookInfoVector[3], bookInfoVector[4], bookInfoVector[5] };
-	bookVector.resize(lineCount+1, book);
+	bookVector.resize(lineCount + 1, book);
 
 }
 
@@ -254,7 +266,7 @@ void lend(string s) {
 	if (stoi(lendBookInfoVector[2]) < 1) {
 		errorMessage.append("Lend for more days!\n");
 	}
-	if(errorMessage.empty()) {
+	if (errorMessage.empty()) {
 		(*it).borrower = lendBookInfoVector[1];
 		(*it).lentDays = lendBookInfoVector[2];
 		showSuccess("Lent", *it);
@@ -332,10 +344,10 @@ void eexit() {
 
 /***********Display***********/
 void showBookList() {
-	cout << "======================================== Book Catalog ========================================\n";
-	cout << "Title\tAuthor\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
+	cout << "\n======================================== Book Catalog ========================================\n";
+	cout << "Title\t\t\tAuthor\t\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
 	cout << bookVector;
-	cout << "============================================ End =============================================\n";
+	cout << "============================================ End =============================================\n\n";
 
 	return;
 }
@@ -396,18 +408,6 @@ vector<string> split(string s, string delim) {
 	return tokens;
 }
 
-string toLowerCase(string str) {
-	int i = 0;
-	char c;
-	while (str[i])
-	{
-		c = str[i];
-		str[i] = tolower(c);
-		i++;
-	}
-	return str;
-};
-
 ostream& operator<<(ostream &strm, const vector<Book> &v) {
 	for (int i = 0; i < v.size(); i++) {
 		strm << v[i];
@@ -416,11 +416,6 @@ ostream& operator<<(ostream &strm, const vector<Book> &v) {
 }
 
 ostream& operator<<(ostream &strm, const Book &b) {
-	strm << "title: " << b.title <<
-		"\t pubYear: " << b.pubYear <<
-		"\t author: " << b.author <<
-		"\t edition: " << b.edition <<
-		"\t borrower: " << b.borrower <<
-		"\t lentDays: " << b.lentDays << "\n";
+	strm << b.title << "\t" << b.author << "\t" << b.pubYear << "\t\t" << b.edition << "\t" << b.borrower << "\t" << b.lentDays << "\n";
 	return strm;
 }

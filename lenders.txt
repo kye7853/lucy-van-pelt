@@ -1,4 +1,4 @@
-The Little Prince; 1943; Antoine de Saint-Exupery; 01; Jim Smith; 14
-The Little Princess; 1948; Antoine Des; 08; Jennifer Miles; 7
-The Little Queen; 1950; Saint-Exupery; 13; Tiffany Holland; 20
-The Little King; 1957; Antoine Saint-Exupery; 05; Nicky Minaj; 3
+The Little Prince; Antoine de Saint-Exupery; 1943; 01; Jim Smith; 14
+The Little Princess; Antoine Des; 1948; 08; Jennifer Miles; 7
+The Little Queen; Saint-Exupery; 1950; 13; Tiffany Holland; 20
+The Little King; Antoine Saint-Exupery; 1957; 05; Nicky Minaj; 3

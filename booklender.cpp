@@ -134,7 +134,7 @@ string toLowerCase(string str) {
 	return str;
 };
 
-void callFunction(istream& in) {
+void callFunction(ifstream& in) {
 	string command;
 	vector<string> commandVector;
 	int size = (split(command, " ")).size();

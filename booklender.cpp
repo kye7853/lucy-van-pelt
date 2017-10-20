@@ -114,10 +114,10 @@ void commandSwitch() {
 }
 
 void showBookList() {
-	cout << "======================================== Book Catalog ========================================\n";
-	cout << "Title\tAuthor\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
+	cout << "\n======================================== Book Catalog ========================================\n";
+	cout << "Title\t\t\tAuthor\t\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
 	cout << bookVector;
-	cout << "============================================ End =============================================\n";
+	cout << "============================================ End =============================================\n\n";
 
 	return;
 }
@@ -406,11 +406,6 @@ ostream& operator<<(ostream &strm, const vector<Book> &v) {
 }
 
 ostream& operator<<(ostream &strm, const Book &b) {
-	strm << "title: " << b.title <<
-		"\t pubYear: " << b.pubYear <<
-		"\t author: " << b.author <<
-		"\t edition: " << b.edition <<
-		"\t borrower: " << b.borrower <<
-		"\t lentDays: " << b.lentDays << "\n";
+	strm << b.title << "\t" << b.author << "\t" << b.pubYear << "\t\t" << b.edition << "\t" << b.borrower << "\t" << b.lentDays << "\n";
 	return strm;
 }

@@ -352,10 +352,10 @@ void showBookList() {
 }
 
 void showSuccess(string function, Book book) {
-	cout << "======================================= Books Successfully " << function << " =============================\n";
-	cout << "Title\t\tAuthor\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
+	cout << "\n======================================== Book Catalog ========================================\n";
+	cout << "Title\t\t\tAuthor\t\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
 	cout << book;
-	cout << "============================================ End =============================================\n";
+	cout << "============================================ End =============================================\n\n";
 
 	return;
 }

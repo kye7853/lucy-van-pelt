@@ -18,13 +18,16 @@ using namespace std;
 struct Book;
 
 /*Functions*/
-/*Start Message*/
+/*Start & Basic*/
 void commandSwitch();
 string toLowerCase(string str);
-
+void showBookList();
+void callFunction(istream& in);
+bool valiidateCommand(vector<string> commandVector);
+void notifyUnreturnedBooks();
 /*Load*/
 void load();
-void showList();
+void showBookList();
 void loadBookFromTxtFile(ifstream& myFile);
 void parseBookInfo(string s, int lineCount);
 /*Insert*/
@@ -37,6 +40,7 @@ void save(string s);
 void returned(string s);
 /*passDay*/
 void passDay();
+void showLentBooks();
 /*print*/
 void print();
 /*exit*/
@@ -45,11 +49,25 @@ void eexit();
 ostream& operator<<(ostream &strm, const vector<Book> &v);
 ostream& operator<<(ostream &strm, const Book &b);
 vector<string> parseInput(string s, int i);
-map<string, function<void(string)>> createFunctionMapWithParam();
-map<string, function<void()>> createFunctionMapWithoutParam();
+vector<string> split(string s, string delim);
+
 /*variables*/
 vector<Book> bookVector;
 vector<Book> booksNeedToBeReturned;
+map<string, function<void(string)>> functionMapWithParam =
+{
+	{ "insert", insert },
+	{ "lend", lend },
+	{ "save", save },
+	{ "returned", returned }
+};
+map<string, function<void()>> functionMapWithoutParam =
+{
+	{ "load", load },
+	{ "print", print },
+	{ "passday", passDay },
+	{ "exit", eexit }
+};
 
 /***********Book struct***********/
 struct Book {
@@ -69,21 +87,16 @@ struct Book {
 
 /***********Main***********/
 int main(int argc, char** argv) {
-	string command;
-
-	commandSwitch();
-	cin >> command;
-	toLowerCase(command);
-
-	load();
-
-	showList();
+	do {
+		commandSwitch();
+		callFunction(cin);
+	} while (1);
 
 	system("pause");
 	return 0;
 }
 
-/*********Start Message*********/
+/*********Start & Basic*********/
 void commandSwitch() {
 	cout << "\n============== Available Commands & Format ==============\n\n";
 	cout << "1. INSERT BookTitle; Author; PubYear; Edition\n";
@@ -99,7 +112,7 @@ void commandSwitch() {
 	return;
 }
 
-void showList() {
+void showBookList() {
 	cout << "======================================== Book Catalog ========================================\n";
 	cout << "Title\t\t\tAuthor\t\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
 	for (int i = 0; i < bookVector.size(); i++) {
@@ -122,13 +135,76 @@ string toLowerCase(string str) {
 	return str;
 };
 
+void callFunction(istream& in) {
+	string command;
+	vector<string> commandVector;
+	int size = (split(command, " ")).size();
+	bool b = false;
+
+	cout << "**********************************" << size;
+
+	getline(in, command);
+	commandVector.resize(size);
+	commandVector = split(command, " ");
+	toLowerCase(commandVector[0]);
+	b = valiidateCommand(commandVector);
+
+	if (b == true) {
+		if (size == 2) {
+			functionMapWithParam[commandVector[0]](commandVector[1]);
+		}
+		else {
+			functionMapWithoutParam[commandVector[0]];
+		}
+		notifyUnreturnedBooks();
+	}
+	else {
+		cout << "Please check the action and parameter, and try again.";
+		return;
+	}
+}
+
+bool valiidateCommand(vector<string> commandVector) {
+	string functionsWithoutParam[] = {"load", "print", "passday", "exit"};
+	string functionsWithParam[] = {"insert", "save", "lend", "returned"};
+	bool valid = true;
+	if ((find(begin(functionsWithoutParam), end(functionsWithoutParam), commandVector[0]) != end(functionsWithoutParam)) && (commandVector.size() == 2)) {
+		valid = false;
+	}
+
+	return valid;
+}
+
+void notifyUnreturnedBooks() {
+	string notifyMessage = "";
+
+	if (booksNeedToBeReturned.empty()) {
+		return;
+	}
+	else {
+		for (Book b : booksNeedToBeReturned) {
+			if (b.lentDays == "0") {
+				notifyMessage.append(b.title + " should be returned by " + b.borrower + " by today. \n" );
+			}
+			else {
+				notifyMessage.append(b.title + "SHOULD HAVE BEEN ALREADY RETURNED BY " + b.borrower + ".\n");
+			}
+		}
+	}
+
+	if (!notifyMessage.empty()) {
+		cout << notifyMessage;
+	}
+
+}
+
 /***********Load***********/
 void load() {
 	ifstream myFile("lenders.txt");		//input file stream
 	if (myFile.is_open())
 	{
 		loadBookFromTxtFile(myFile);
-		cout << bookVector;
+		showBookList();
 		myFile.close();
 	}
 	else cout << "Unable to open file";		//message when file not opened
@@ -138,8 +214,8 @@ void loadBookFromTxtFile(ifstream& myFile) {
 	string bookInfoString = "";
 	int lineCount = 0;
 
-	for (int i = 0; !myFile.eof(); i++) {
-		getline(myFile, bookInfoString);
+	for (int i = 0; getline(myFile, bookInfoString); i++) {
+		//getline(myFile, bookInfoString);
 		parseBookInfo(bookInfoString, lineCount);
 		lineCount++;
 	}
@@ -166,7 +242,7 @@ void insert(string s) {
 
 	Book newBook = { insertBookInfoVector[0], insertBookInfoVector[1], insertBookInfoVector[2], insertBookInfoVector[3] };
 	bookVector.resize(bookVector.size() + 1, newBook);
-	cout << bookVector;
+	showBookList();
 }
 
 /***********LEND BookTitle; Person Borrowing; How many days***********/
@@ -185,7 +261,6 @@ void lend(string s) {
 		if (errorMessage.empty()) {
 			(*it).borrower = lendBookInfoVector[1];
 			(*it).lentDays = lendBookInfoVector[2];
-			//int index = distance(bookVector.begin(), it);
 			cout << *it;
 		}
 	}
@@ -247,17 +322,26 @@ void passDay() {
 		}
 		bookVector[i].lentDays = to_string(lentDaysInt);
 	}
+	showLentBooks();
+}
+
+void showLentBooks() {
+	for (Book b : bookVector) {
+		if (b.borrower != "None") {
+			cout << b;
+		}
+	}
 }
 
 /***********PRINT***********/
 void print() {
-	cout << bookVector;
+	showBookList();
 }
 
 /***********EXIT***********/
 void eexit() {
 	cout << "You are exiting the application";
-	return;
+	exit;
 }
 
 /***********Utils***********/
@@ -280,28 +364,18 @@ vector<string> parseInput(string s, int i) {
 	return bookInfoVector;
 }
 
-map<string, function<void(string)>> createFunctionMapWithParam() {
-	map<string, function<void(string)>> functionMap1 =
-	{
-		{ "insert", insert },
-		{ "lend", lend },
-		{ "save", save },
-		{ "returned", returned }
-	};
+vector<string> split(string s, string delim) {
+	vector<string> tokens;
+	size_t pos = 0;
+	string token;
 
-	return functionMap1;
-}
+	pos = s.find(delim);
+	token = s.substr(0, pos);
+	s.erase(0, pos + delim.length());
+	tokens.push_back(token);
+	tokens.push_back(s);
 
-map<string, function<void()>> createFunctionMapWithoutParam() {
-	map<string, function<void()>> functionMap =
-	{
-		{ "load", load },
-		{ "print", print },
-		{ "passday", passDay },
-		{ "exit", eexit }
-	};
-
-	return functionMap;
+	return tokens;
 }
 
 ostream& operator<<(ostream &strm, const vector<Book> &v) {

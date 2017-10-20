@@ -157,7 +157,7 @@ void callFunction(istream& in) {
 			functionMapWithParam[commandVector[0]](commandVector[1]);
 		}
 		else {
-			functionMapWithoutParam[commandVector[0]];
+			functionMapWithoutParam[commandVector[0]]();
 		}
 		notifyUnreturnedBooks();
 	}
@@ -171,7 +171,15 @@ bool valiidateCommand(vector<string> commandVector) {
 	string functionsWithoutParam[] = { "load", "print", "passday", "exit" };
 	string functionsWithParam[] = { "insert", "save", "lend", "returned" };
 	bool valid = true;
-	if ((find(begin(functionsWithoutParam), end(functionsWithoutParam), commandVector[0]) != end(functionsWithoutParam)) && (commandVector.size() == 2)) {
+	bool bool1 = find(begin(functionsWithoutParam), end(functionsWithoutParam), commandVector[0]) != end(functionsWithoutParam);
+	bool bool2 = find(begin(functionsWithParam), end(functionsWithParam), commandVector[0]) != end(functionsWithParam);
+	if (bool1 || bool2) {
+		if ((bool1 && commandVector.size() != 1) || (bool2 && commandVector.size() != 2)) {
+			valid = false;
+		}
+
+	}
+	else {
 		valid = false;
 	}
 
@@ -234,7 +242,7 @@ void parseBookInfo(string s, int lineCount) {
 
 	bookInfoVector = parseInput(s, 6);
 	Book book = { bookInfoVector[0], bookInfoVector[1], bookInfoVector[2], bookInfoVector[3], bookInfoVector[4], bookInfoVector[5] };
-	bookVector.resize(lineCount, book);
+	bookVector.resize(lineCount+1, book);
 
 }
 

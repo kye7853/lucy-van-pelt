@@ -1,4 +1,4 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -24,6 +24,7 @@ string toLowerCase(string str);
 
 /*Load*/
 void load();
+void showList();
 void loadBookFromTxtFile(ifstream& myFile);
 void parseBookInfo(string s, int lineCount);
 /*Insert*/
@@ -69,11 +70,13 @@ struct Book {
 /***********Main***********/
 int main(int argc, char** argv) {
 	string command;
-	
+
 	commandSwitch();
 	cin >> command;
 	cout << toLowerCase(command);
-	
+
+	showList();
+
 	return 0;
 }
 
@@ -89,19 +92,28 @@ void commandSwitch() {
 	cout << "7. EXIT\n\n";
 	cout << "---------------------------------------------------------\n";
 	cout << ">>";
-	
+
+	return;
+}
+
+void showList() {
+	cout << "======================================== Book Catalog ========================================\n";
+	cout << "Title\tAuthor\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
+	cout << bookVector;
+	cout << "============================================ End =============================================\n";
+
 	return;
 }
 
 string toLowerCase(string str) {
-	int i=0;
-		char c;
-		while (str[i])
-		{
-		c=str[i];
+	int i = 0;
+	char c;
+	while (str[i])
+	{
+		c = str[i];
 		str[i] = tolower(c);
 		i++;
-		}
+	}
 	return str;
 };
 
@@ -137,7 +149,7 @@ void parseBookInfo(string s, int lineCount) {
 	size_t next = 0;
 
 	bookInfoVector = parseInput(s, 6);
-	Book book = {bookInfoVector[0], bookInfoVector[1], bookInfoVector[2], bookInfoVector[3], bookInfoVector[4], bookInfoVector[5]};
+	Book book = { bookInfoVector[0], bookInfoVector[1], bookInfoVector[2], bookInfoVector[3], bookInfoVector[4], bookInfoVector[5] };
 	bookVector.resize(lineCount, book);
 
 }
@@ -147,7 +159,7 @@ void insert(string s) {
 	vector<string> insertBookInfoVector(4);
 	insertBookInfoVector = parseInput(s, 4);
 
-	Book newBook = {insertBookInfoVector[0], insertBookInfoVector[1], insertBookInfoVector[2], insertBookInfoVector[3]};
+	Book newBook = { insertBookInfoVector[0], insertBookInfoVector[1], insertBookInfoVector[2], insertBookInfoVector[3] };
 	bookVector.resize(bookVector.size() + 1, newBook);
 	cout << bookVector;
 }
@@ -156,7 +168,7 @@ void insert(string s) {
 void lend(string s) {
 	vector<string> lendBookInfoVector(3);
 	string bookTitle = lendBookInfoVector[0];
-	vector<Book>::iterator it = find_if(bookVector.begin(), bookVector.end(), [&bookTitle](const Book& obj) {return obj.title == bookTitle;});
+	vector<Book>::iterator it = find_if(bookVector.begin(), bookVector.end(), [&bookTitle](const Book& obj) {return obj.title == bookTitle; });
 	string errorMessage = "";
 
 	if (stoi(lendBookInfoVector[2]) < 1) {
@@ -199,7 +211,7 @@ void passDay() {
 		lentDaysInt -= 1;
 		bookVector[i].lentDays = to_string(lentDaysInt);
 		if (lentDaysInt < 0) {
-			
+
 		}
 		bookVector[i].lentDays = to_string(lentDaysInt);
 	}
@@ -251,18 +263,18 @@ map<string, FnPtr2> createFunctionMapWithoutParam() {
 }
 
 ostream& operator<<(ostream &strm, const vector<Book> &v) {
-	for (int i = 0; i < v.size() ; i++) {
+	for (int i = 0; i < v.size(); i++) {
 		strm << v[i];
 	}
 	return strm;
 }
 
 ostream& operator<<(ostream &strm, const Book &b) {
-		strm << "title: " << b.title <<
-			"\t pubYear: " << b.pubYear <<
-			"\t author: " << b.author <<
-			"\t edition: " << b.edition <<
-			"\t borrower: " << b.borrower <<
-			"\t lentDays: " << b.lentDays << "\n";
+	strm << "title: " << b.title <<
+		"\t pubYear: " << b.pubYear <<
+		"\t author: " << b.author <<
+		"\t edition: " << b.edition <<
+		"\t borrower: " << b.borrower <<
+		"\t lentDays: " << b.lentDays << "\n";
 	return strm;
 }

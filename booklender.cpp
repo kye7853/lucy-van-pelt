@@ -143,7 +143,6 @@ void callFunction(istream& in) {
 	commandVector.resize(size);
 	commandVector = split(command, " ");
 	commandVector[0] = toLowerCase(commandVector[0]);
-	cout << commandVector[0] << endl;
 	b = valiidateCommand(commandVector);
 
 	if (b == true) {
@@ -354,8 +353,8 @@ void showBookList() {
 }
 
 void showSuccess(string function, Book book) {
-	cout << "======================================== Book Successfully " << function << " =============================\n";
-	cout << "Title\tAuthor\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
+	cout << "======================================= Books Successfully " << function << " =============================\n";
+	cout << "Title\t\tAuthor\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
 	cout << book;
 	cout << "============================================ End =============================================\n";
 

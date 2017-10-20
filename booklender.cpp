@@ -1,8 +1,10 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <stdio.h>
+#include <ctype.h>
 #include <algorithm>
 #include <stdlib.h>
 #include <string.h>
@@ -15,6 +17,10 @@ using namespace std;
 struct Book;
 
 /*Functions*/
+/*Start Message*/
+void commandSwitch();
+string toLowerCase(string str);
+
 /*Load*/
 void load();
 void loadBookFromTxtFile(ifstream& myFile);
@@ -37,6 +43,45 @@ struct Book {
 	string edition;
 	string borrower;
 	string lentDays;
+};
+
+/***********Main***********/
+int main(int argc, char** argv) {
+	string command;
+	
+	commandSwitch();
+	cin >> command;
+	cout << toLowerCase(command);
+	
+	return 0;
+}
+
+/*********Start Message*********/
+void commandSwitch() {
+	cout << "============== Available Commands & Format ==============\n\n";
+	cout << "1. INSERT BookTitle; Author; PubYear; Edition\n";
+	cout << "2. LEND BookTitle; Person Borrowing; How many days\n";
+	cout << "3. SAVE new_filename.txt\n";
+	cout << "4. RETURNED BookTitle\n";
+	cout << "5. PASSDAY\n";
+	cout << "6. PRINT\n";
+	cout << "7. EXIT\n\n";
+	cout << "---------------------------------------------------------\n";
+	cout << ">>";
+	
+	return;
+}
+
+string toLowerCase(string str) {
+	int i=0;
+		char c;
+		while (str[i])
+		{
+		c=str[i];
+		str[i] = tolower(c);
+		i++;
+		}
+	return str;
 };
 
 /***********Load***********/
@@ -104,9 +149,9 @@ vector<string> parseInput(string s, int i) {
 void passDay() {
 	int lentDaysInt = 0;
 	for (int i = 0; i < bookVector.size(); i++) {
-		lentDaysInt = stoi(bookVector[i].lentDays);
+//		lentDaysInt = stoi(bookVector[i].lentDays);
 		lentDaysInt -= 1;
-		bookVector[i].lentDays = to_string(lentDaysInt);
+//		bookVector[i].lentDays = to_string(lentDaysInt);
 	}
 }
 /***********PRINT***********/
@@ -124,10 +169,4 @@ ostream& operator<<(ostream &strm, const vector<Book> &v) {
 			"\t lentDays: " << b.lentDays << "\n";
 	}
 	return strm;
-}
-/***********Main***********/
-int main(int argc, char** argv) {
-
-
-	return 0;
 }

@@ -21,8 +21,6 @@ struct Book;
 /*Functions*/
 /*Start & Basic*/
 void commandSwitch();
-string toLowerCase(string str);
-void showBookList();
 void callFunction(istream& in);
 bool valiidateCommand(vector<string> commandVector);
 void notifyUnreturnedBooks();
@@ -46,11 +44,17 @@ void showLentBooks();
 void print();
 /*exit*/
 void eexit();
+
+/*Display*/
+void showBookList();
+void showSuccess(string function, Book book);
+
 /*Util*/
-ostream& operator<<(ostream &strm, const vector<Book> &v);
-ostream& operator<<(ostream &strm, const Book &b);
 vector<string> parseInput(string s, int i);
 vector<string> split(string s, string delim);
+string toLowerCase(string str);
+ostream& operator<<(ostream &strm, const vector<Book> &v);
+ostream& operator<<(ostream &strm, const Book &b);
 
 /*variables*/
 vector<Book> bookVector;
@@ -113,27 +117,6 @@ void commandSwitch() {
 	return;
 }
 
-void showBookList() {
-	cout << "======================================== Book Catalog ========================================\n";
-	cout << "Title\tAuthor\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
-	cout << bookVector;
-	cout << "============================================ End =============================================\n";
-
-	return;
-}
-
-string toLowerCase(string str) {
-	int i = 0;
-	char c;
-	while (str[i])
-	{
-		c = str[i];
-		str[i] = tolower(c);
-		i++;
-	}
-	return str;
-};
-
 void callFunction(istream& in) {
 	string command = "";
 	vector<string> commandVector;
@@ -162,7 +145,7 @@ void callFunction(istream& in) {
 		notifyUnreturnedBooks();
 	}
 	else {
-		cout << "Please check the action and parameter, and try again.";
+		cout << "Please check the action and parameter, and try again.\n";
 		return;
 	}
 }
@@ -259,24 +242,20 @@ void insert(string s) {
 /***********LEND BookTitle; Person Borrowing; How many days***********/
 void lend(string s) {
 	vector<string> lendBookInfoVector(3);
+	lendBookInfoVector = parseInput(s, 3);
 	string bookTitle = lendBookInfoVector[0];
 	vector<Book>::iterator it = find_if(bookVector.begin(), bookVector.end(), [&bookTitle](const Book& obj) {return obj.title == bookTitle; });
 	string errorMessage = "";
-
+	if (it == bookVector.end()) {
+		errorMessage.append("NO SUCH BOOK\n");
+	}
 	if (stoi(lendBookInfoVector[2]) < 1) {
-		errorMessage.append("Lend for more days!");
+		errorMessage.append("Lend for more days!\n");
 	}
-
-	if (it != bookVector.end())
-	{
-		if (errorMessage.empty()) {
-			(*it).borrower = lendBookInfoVector[1];
-			(*it).lentDays = lendBookInfoVector[2];
-			cout << *it;
-		}
-	}
-	else {
-		errorMessage.append("\n NO SUCH BOOK!");
+	if(errorMessage.empty()) {
+		(*it).borrower = lendBookInfoVector[1];
+		(*it).lentDays = lendBookInfoVector[2];
+		showSuccess("Lent", *it);
 	}
 
 	if (!errorMessage.empty()) {
@@ -305,7 +284,7 @@ void returned(string s) {
 		else {
 			(*it).borrower = "None";
 			(*it).lentDays = "0";
-			cout << "Return Successful \n" << *it;
+			showSuccess("Returned", *it);
 		}
 	}
 	else {
@@ -352,6 +331,25 @@ void eexit() {
 	exit(0);
 }
 
+/***********Display***********/
+void showBookList() {
+	cout << "======================================== Book Catalog ========================================\n";
+	cout << "Title\tAuthor\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
+	cout << bookVector;
+	cout << "============================================ End =============================================\n";
+
+	return;
+}
+
+void showSuccess(string function, Book book) {
+	cout << "======================================== Book Successfully " << function << " =============================\n";
+	cout << "Title\tAuthor\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
+	cout << book;
+	cout << "============================================ End =============================================\n";
+
+	return;
+}
+
 /***********Utils***********/
 
 //parse input string to return vector of parameters
@@ -374,29 +372,31 @@ vector<string> parseInput(string s, int i) {
 
 vector<string> split(string s, string delim) {
 	vector<string> tokens;
-	cout << tokens.size() << endl;
 	size_t pos = 0;
-	cout << tokens.size() << endl;
 	string token;
-	cout << tokens.size() << endl;
-
 	pos = s.find(delim);
-	cout << "****" << pos << "****" << endl;
-	cout << tokens.size() << endl;
+
 	if (pos != string::npos) {
-		cout << tokens.size() << endl;
 		token = s.substr(0, pos);
-		cout << tokens.size() << endl;
 		s.erase(0, pos + delim.length());
-		cout << tokens.size() << endl;
 		tokens.push_back(token);
-		cout << tokens.size() << endl;
 	}
 	tokens.push_back(s);
-	cout << tokens.size() << endl;
 
 	return tokens;
 }
+
+string toLowerCase(string str) {
+	int i = 0;
+	char c;
+	while (str[i])
+	{
+		c = str[i];
+		str[i] = tolower(c);
+		i++;
+	}
+	return str;
+};
 
 ostream& operator<<(ostream &strm, const vector<Book> &v) {
 	for (int i = 0; i < v.size(); i++) {

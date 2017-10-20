@@ -35,13 +35,13 @@ void parseBookInfo(string s, int lineCount);
 void insert(string s);
 /*lend*/
 void lend(string s);
-void showLentBooks();
 /*save*/
 void save(string s);
 /*returned*/
 void returned(string s);
 /*passDay*/
 void passDay();
+void showLentBooks();
 /*print*/
 void print();
 /*exit*/
@@ -203,7 +203,7 @@ void load() {
 	if (myFile.is_open())
 	{
 		loadBookFromTxtFile(myFile);
-		cout << bookVector;
+		showBookList();
 		myFile.close();
 	}
 	else cout << "Unable to open file";		//message when file not opened
@@ -241,7 +241,7 @@ void insert(string s) {
 
 	Book newBook = { insertBookInfoVector[0], insertBookInfoVector[1], insertBookInfoVector[2], insertBookInfoVector[3] };
 	bookVector.resize(bookVector.size() + 1, newBook);
-	cout << bookVector;
+	showBookList();
 }
 
 /***********LEND BookTitle; Person Borrowing; How many days***********/
@@ -260,7 +260,7 @@ void lend(string s) {
 		if (errorMessage.empty()) {
 			(*it).borrower = lendBookInfoVector[1];
 			(*it).lentDays = lendBookInfoVector[2];
-			showLentBooks;
+			cout << *it;
 		}
 	}
 	else {
@@ -269,14 +269,6 @@ void lend(string s) {
 
 	if (!errorMessage.empty()) {
 		cout << errorMessage;
-	}
-}
-
-void showLentBooks() {
-	for (Book b : bookVector) {
-		if (b.borrower != "None") {
-			cout << b;
-		}
 	}
 }
 
@@ -325,6 +317,15 @@ void passDay() {
 			booksNeedToBeReturned.push_back(bookVector[i]);
 		}
 		bookVector[i].lentDays = to_string(lentDaysInt);
+	}
+	showLentBooks();
+}
+
+void showLentBooks() {
+	for (Book b : bookVector) {
+		if (b.borrower != "None") {
+			cout << b;
+		}
 	}
 }
 

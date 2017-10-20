@@ -11,7 +11,6 @@
 #include <vector>
 #include <map>
 #include <functional>
-/* run this program using the console pauser or add your own getch, system("pause") or input loop */
 
 using namespace std;
 
@@ -88,18 +87,18 @@ struct Book {
 
 /***********Main***********/
 int main(int argc, char** argv) {
-
 	do {
 		commandSwitch();
 		callFunction(cin);
 	} while (1);
 
+	system("pause");
 	return 0;
 }
 
 /*********Start & Basic*********/
 void commandSwitch() {
-	cout << "============== Available Commands & Format ==============\n\n";
+	cout << "\n============== Available Commands & Format ==============\n\n";
 	cout << "1. INSERT BookTitle; Author; PubYear; Edition\n";
 	cout << "2. LEND BookTitle; Person Borrowing; How many days\n";
 	cout << "3. SAVE new_filename.txt\n";
@@ -115,8 +114,10 @@ void commandSwitch() {
 
 void showBookList() {
 	cout << "======================================== Book Catalog ========================================\n";
-	cout << "Title\tAuthor\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
-	cout << bookVector;
+	cout << "Title\t\t\tAuthor\t\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
+	for (int i = 0; i < bookVector.size(); i++) {
+		cout << bookVector[i];
+	}
 	cout << "============================================ End =============================================\n";
 
 	return;
@@ -276,7 +277,10 @@ void lend(string s) {
 void save(string s) {
 	ofstream wfile;
 	wfile.open(s);      //open and write to the file
-	wfile << bookVector;
+	for (int i = 0; i < bookVector.size(); i++) {
+		wfile << bookVector[i].title << "; " << bookVector[i].author << "; " << bookVector[i].pubYear << "; " << bookVector[i].edition << "; " << bookVector[i].borrower << "; " << bookVector[i].lentDays << "\n";
+		cout << bookVector[i].title << "; " << bookVector[i].author << "; " << bookVector[i].pubYear << "; " << bookVector[i].edition << "; " << bookVector[i].borrower << "; " << bookVector[i].lentDays << endl;
+	}
 	wfile.close();
 }
 
@@ -382,11 +386,6 @@ ostream& operator<<(ostream &strm, const vector<Book> &v) {
 }
 
 ostream& operator<<(ostream &strm, const Book &b) {
-	strm << "title: " << b.title <<
-		"\t pubYear: " << b.pubYear <<
-		"\t author: " << b.author <<
-		"\t edition: " << b.edition <<
-		"\t borrower: " << b.borrower <<
-		"\t lentDays: " << b.lentDays << "\n";
+	strm << b.title << "\t" << b.author << "\t" << b.pubYear << "\t\t" << b.edition << "\t" << b.borrower << "\t" << b.lentDays << endl;
 	return strm;
 }

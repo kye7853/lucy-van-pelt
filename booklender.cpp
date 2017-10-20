@@ -17,11 +17,14 @@ struct Book;
 /*Functions*/
 /*Load*/
 void load();
+void loadBookFromTxtFile(ifstream& myFile);
 void parseBookInfo(string s, Book* tempBookList, int lineCount);
 /*passDay*/
 void passDay();
+
 /*Util*/
 ostream& operator<<(ostream &strm, const vector<Book> &v);
+vector<string> parseInput(string s, int i);
 
 /*variables*/
 vector<Book> bookVector;
@@ -38,27 +41,30 @@ struct Book {
 
 /***********Load***********/
 void load() {
-	Book* tempBookList = new Book[200];
-	string bookInfoString = "";
-	int lineCount = 0;			//to count the lines of the text file
-
 	ifstream myFile("lenders.txt");		//input file stream
 	if (myFile.is_open())
 	{
-		for (int i = 0; !myFile.eof(); i++) {
-			getline(myFile, bookInfoString);
-			parseBookInfo(bookInfoString, tempBookList, lineCount);
-			lineCount++;
-		}
-		myFile.close();
-		bookVector.resize(lineCount);
-		bookVector.assign(tempBookList, tempBookList + lineCount);
-		delete tempBookList;
+		loadBookFromTxtFile(myFile);
 		cout << bookVector;
+		myFile.close();
 	}
 	else cout << "Unable to open file";		//message when file not opened
 }
+void loadBookFromTxtFile(ifstream& myFile) {
+	Book* tempBookList = new Book[200];
+	string bookInfoString = "";
+	int lineCount = 0;
 
+	for (int i = 0; !myFile.eof(); i++) {
+		getline(myFile, bookInfoString);
+		parseBookInfo(bookInfoString, tempBookList, lineCount);
+		lineCount++;
+	}
+
+	bookVector.resize(lineCount);
+	bookVector.assign(tempBookList, tempBookList + lineCount);
+	delete tempBookList;
+}
 void parseBookInfo(string s, Book* tempBookList, int lineCount) {
 
 	string delimiter = "; ";
@@ -67,6 +73,19 @@ void parseBookInfo(string s, Book* tempBookList, int lineCount) {
 	size_t last = 0;
 	size_t next = 0;
 
+	bookInfoVector = parseInput(s, 6);
+	Book bookInfo = {bookInfoVector[0], bookInfoVector[1], bookInfoVector[2], bookInfoVector[3], bookInfoVector[4], bookInfoVector[5]};
+	tempBookList[lineCount] = bookInfo;
+
+}
+
+vector<string> parseInput(string s, int i) {
+	string delimiter = "; ";
+	int j = 0;
+	size_t last = 0;
+	size_t next = 0;
+	vector<string> bookInfoVector(i);
+
 	while ((next = s.find(delimiter, last)) != string::npos) {
 		bookInfoVector[j] = s.substr(last, next - last);
 		last = next + 1;
@@ -74,9 +93,7 @@ void parseBookInfo(string s, Book* tempBookList, int lineCount) {
 	}
 	bookInfoVector[j] = s.substr(last);
 
-	Book bookInfo = {bookInfoVector[0], bookInfoVector[1], bookInfoVector[2], bookInfoVector[3], bookInfoVector[4], bookInfoVector[5]};
-	tempBookList[lineCount] = bookInfo;
-
+	return bookInfoVector;
 }
 
 /***********INSERT BookTitle; Author; PubYear; Edition***********/

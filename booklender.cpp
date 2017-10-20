@@ -135,21 +135,25 @@ string toLowerCase(string str) {
 };
 
 void callFunction(istream& in) {
-	string command;
+	string command = "";
 	vector<string> commandVector;
+	getline(in, command);
 	int size = (split(command, " ")).size();
+
 	bool b = false;
 
-	cout << "**********************************" << size;
+	//	cout << "**********************************" << size;   //Test
 
-	getline(in, command);
+
 	commandVector.resize(size);
 	commandVector = split(command, " ");
-	toLowerCase(commandVector[0]);
+	commandVector[0] = toLowerCase(commandVector[0]);
+	cout << commandVector[0] << endl;
 	b = valiidateCommand(commandVector);
 
 	if (b == true) {
 		if (size == 2) {
+			cout << commandVector[1] << endl;
 			functionMapWithParam[commandVector[0]](commandVector[1]);
 		}
 		else {
@@ -164,8 +168,8 @@ void callFunction(istream& in) {
 }
 
 bool valiidateCommand(vector<string> commandVector) {
-	string functionsWithoutParam[] = {"load", "print", "passday", "exit"};
-	string functionsWithParam[] = {"insert", "save", "lend", "returned"};
+	string functionsWithoutParam[] = { "load", "print", "passday", "exit" };
+	string functionsWithParam[] = { "insert", "save", "lend", "returned" };
 	bool valid = true;
 	if ((find(begin(functionsWithoutParam), end(functionsWithoutParam), commandVector[0]) != end(functionsWithoutParam)) && (commandVector.size() == 2)) {
 		valid = false;
@@ -183,7 +187,7 @@ void notifyUnreturnedBooks() {
 	else {
 		for (Book b : booksNeedToBeReturned) {
 			if (b.lentDays == "0") {
-				notifyMessage.append(b.title + " should be returned by " + b.borrower + " by today. \n" );
+				notifyMessage.append(b.title + " should be returned by " + b.borrower + " by today. \n");
 			}
 			else {
 				notifyMessage.append(b.title + "SHOULD HAVE BEEN ALREADY RETURNED BY " + b.borrower + ".\n");
@@ -337,7 +341,7 @@ void print() {
 /***********EXIT***********/
 void eexit() {
 	cout << "You are exiting the application";
-	exit;
+	exit(0);
 }
 
 /***********Utils***********/
@@ -362,14 +366,26 @@ vector<string> parseInput(string s, int i) {
 
 vector<string> split(string s, string delim) {
 	vector<string> tokens;
+	cout << tokens.size() << endl;
 	size_t pos = 0;
+	cout << tokens.size() << endl;
 	string token;
+	cout << tokens.size() << endl;
 
 	pos = s.find(delim);
-	token = s.substr(0, pos);
-	s.erase(0, pos + delim.length());
-	tokens.push_back(token);
+	cout << "****" << pos << "****" << endl;
+	cout << tokens.size() << endl;
+	if (pos != string::npos) {
+		cout << tokens.size() << endl;
+		token = s.substr(0, pos);
+		cout << tokens.size() << endl;
+		s.erase(0, pos + delim.length());
+		cout << tokens.size() << endl;
+		tokens.push_back(token);
+		cout << tokens.size() << endl;
+	}
 	tokens.push_back(s);
+	cout << tokens.size() << endl;
 
 	return tokens;
 }

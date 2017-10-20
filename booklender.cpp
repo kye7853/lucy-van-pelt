@@ -1,4 +1,4 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -10,6 +10,7 @@
 #include <string.h>
 #include <vector>
 #include <map>
+#include <functional>
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 
 using namespace std;
@@ -36,19 +37,19 @@ void save(string s);
 void returned(string s);
 /*passDay*/
 void passDay();
+/*print*/
+void print();
+/*exit*/
+void eexit();
 /*Util*/
 ostream& operator<<(ostream &strm, const vector<Book> &v);
 ostream& operator<<(ostream &strm, const Book &b);
 vector<string> parseInput(string s, int i);
-map<string, FnPtr1> createFunctionMapWithParam();
-map<string, FnPtr2> createFunctionMapWithoutParam();
-
+map<string, function<void(string)>> createFunctionMapWithParam();
+map<string, function<void()>> createFunctionMapWithoutParam();
 /*variables*/
 vector<Book> bookVector;
-
-/*typedef*/
-typedef void(*FnPtr1)(string);
-typedef void(*FnPtr2)();
+vector<Book> booksNeedToBeReturned;
 
 /***********Book struct***********/
 struct Book {
@@ -69,11 +70,11 @@ struct Book {
 /***********Main***********/
 int main(int argc, char** argv) {
 	string command;
-	
+
 	commandSwitch();
 	cin >> command;
 	cout << toLowerCase(command);
-	
+
 	return 0;
 }
 
@@ -89,19 +90,19 @@ void commandSwitch() {
 	cout << "7. EXIT\n\n";
 	cout << "---------------------------------------------------------\n";
 	cout << ">>";
-	
+
 	return;
 }
 
 string toLowerCase(string str) {
-	int i=0;
-		char c;
-		while (str[i])
-		{
-		c=str[i];
+	int i = 0;
+	char c;
+	while (str[i])
+	{
+		c = str[i];
 		str[i] = tolower(c);
 		i++;
-		}
+	}
 	return str;
 };
 
@@ -137,7 +138,7 @@ void parseBookInfo(string s, int lineCount) {
 	size_t next = 0;
 
 	bookInfoVector = parseInput(s, 6);
-	Book book = {bookInfoVector[0], bookInfoVector[1], bookInfoVector[2], bookInfoVector[3], bookInfoVector[4], bookInfoVector[5]};
+	Book book = { bookInfoVector[0], bookInfoVector[1], bookInfoVector[2], bookInfoVector[3], bookInfoVector[4], bookInfoVector[5] };
 	bookVector.resize(lineCount, book);
 
 }
@@ -147,7 +148,7 @@ void insert(string s) {
 	vector<string> insertBookInfoVector(4);
 	insertBookInfoVector = parseInput(s, 4);
 
-	Book newBook = {insertBookInfoVector[0], insertBookInfoVector[1], insertBookInfoVector[2], insertBookInfoVector[3]};
+	Book newBook = { insertBookInfoVector[0], insertBookInfoVector[1], insertBookInfoVector[2], insertBookInfoVector[3] };
 	bookVector.resize(bookVector.size() + 1, newBook);
 	cout << bookVector;
 }
@@ -156,7 +157,7 @@ void insert(string s) {
 void lend(string s) {
 	vector<string> lendBookInfoVector(3);
 	string bookTitle = lendBookInfoVector[0];
-	vector<Book>::iterator it = find_if(bookVector.begin(), bookVector.end(), [&bookTitle](const Book& obj) {return obj.title == bookTitle;});
+	vector<Book>::iterator it = find_if(bookVector.begin(), bookVector.end(), [&bookTitle](const Book& obj) {return obj.title == bookTitle; });
 	string errorMessage = "";
 
 	if (stoi(lendBookInfoVector[2]) < 1) {
@@ -180,6 +181,7 @@ void lend(string s) {
 		cout << errorMessage;
 	}
 }
+
 /***********SAVE new_filename.txt***********/
 void save(string s) {
 	ofstream wfile;
@@ -187,10 +189,33 @@ void save(string s) {
 	wfile << bookVector;
 	wfile.close();
 }
+
 /***********RETURNED BookTitle***********/
 void returned(string s) {
+	vector<Book>::iterator it = find_if(bookVector.begin(), bookVector.end(), [&s](const Book& obj) {return obj.title == s; });
+	string errorMessage = "";
+
+	if (it != bookVector.end())
+	{
+		if ((*it).borrower == "None") {
+			errorMessage.append("\n That book is not borrowed!");
+		}
+		else {
+			(*it).borrower = "None";
+			(*it).lentDays = "0";
+			cout << "Return Successful \n" << *it;
+		}
+	}
+	else {
+		errorMessage.append("\n NO SUCH BOOK!");
+	}
+
+	if (!errorMessage.empty()) {
+		cout << errorMessage;
+	}
 
 }
+
 /***********PASSDAY***********/
 void passDay() {
 	int lentDaysInt = 0;
@@ -198,18 +223,20 @@ void passDay() {
 		lentDaysInt = stoi(bookVector[i].lentDays);
 		lentDaysInt -= 1;
 		bookVector[i].lentDays = to_string(lentDaysInt);
-		if (lentDaysInt < 0) {
-			
+		if (lentDaysInt < 1) {
+			booksNeedToBeReturned.push_back(bookVector[i]);
 		}
 		bookVector[i].lentDays = to_string(lentDaysInt);
 	}
 }
+
 /***********PRINT***********/
 void print() {
 	cout << bookVector;
 }
+
 /***********EXIT***********/
-void exit() {
+void eexit() {
 	cout << "You are exiting the application";
 	return;
 }
@@ -234,35 +261,43 @@ vector<string> parseInput(string s, int i) {
 	return bookInfoVector;
 }
 
-map<string, FnPtr1> createFunctionMapWithParam() {
-	map<string, FnPtr1> functionMap1;
-	functionMap1["insert"] = insert;
-	functionMap1["lend"] = lend;
-	functionMap1["save"] = save;
-	functionMap1["returned"] = returned;
+map<string, function<void(string)>> createFunctionMapWithParam() {
+	map<string, function<void(string)>> functionMap1 =
+	{
+		{ "insert", insert },
+		{ "lend", lend },
+		{ "save", save },
+		{ "returned", returned }
+	};
+
+	return functionMap1;
 }
 
-map<string, FnPtr2> createFunctionMapWithoutParam() {
-	map<string, FnPtr2> functionMap1;
-	functionMap1["load"] = load;
-	functionMap1["print"] = print;
-	functionMap1["passday"] = passDay;
-	functionMap1["exit"] = exit;
+map<string, function<void()>> createFunctionMapWithoutParam() {
+	map<string, function<void()>> functionMap =
+	{
+		{ "load", load },
+		{ "print", print },
+		{ "passday", passDay },
+		{ "exit", eexit }
+	};
+
+	return functionMap;
 }
 
 ostream& operator<<(ostream &strm, const vector<Book> &v) {
-	for (int i = 0; i < v.size() ; i++) {
+	for (int i = 0; i < v.size(); i++) {
 		strm << v[i];
 	}
 	return strm;
 }
 
 ostream& operator<<(ostream &strm, const Book &b) {
-		strm << "title: " << b.title <<
-			"\t pubYear: " << b.pubYear <<
-			"\t author: " << b.author <<
-			"\t edition: " << b.edition <<
-			"\t borrower: " << b.borrower <<
-			"\t lentDays: " << b.lentDays << "\n";
+	strm << "title: " << b.title <<
+		"\t pubYear: " << b.pubYear <<
+		"\t author: " << b.author <<
+		"\t edition: " << b.edition <<
+		"\t borrower: " << b.borrower <<
+		"\t lentDays: " << b.lentDays << "\n";
 	return strm;
 }

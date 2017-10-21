@@ -93,6 +93,7 @@ struct Book {
 
 /***********Main***********/
 int main(int argc, char** argv) {
+	load();
 
 	do {
 		commandSwitch();
@@ -104,7 +105,7 @@ int main(int argc, char** argv) {
 
 /*********Start & Basic*********/
 void commandSwitch() {
-	cout << "============== Available Commands & Format ==============\n\n";
+	cout << "\n============== Available Commands & Format ==============\n\n";
 	cout << "1. INSERT BookTitle; Author; PubYear; Edition\n";
 	cout << "2. LEND BookTitle; Person Borrowing; How many days\n";
 	cout << "3. SAVE new_filename.txt\n";
@@ -182,7 +183,7 @@ void notifyUnreturnedBooks() {
 				notifyMessage.append(b.title + " should be returned by " + b.borrower + " by today. \n");
 			}
 			else {
-				notifyMessage.append(b.title + "SHOULD HAVE BEEN ALREADY RETURNED BY " + b.borrower + ".\n");
+				notifyMessage.append(b.title + " SHOULD HAVE BEEN ALREADY RETURNED BY " + b.borrower + ".\n");
 			}
 		}
 	}
@@ -336,8 +337,8 @@ void eexit() {
 
 /***********Display***********/
 void showBookList() {
-	cout << "======================================== Book Catalog ========================================\n";
-	cout << "Title\tAuthor\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
+	cout << "\n======================================== Book Catalog ========================================\n";
+	cout << "Title\t\t\tAuthor\t\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
 	cout << bookVector;
 	cout << "============================================ End =============================================\n";
 
@@ -348,14 +349,14 @@ void showSuccess(string function, Book book) {
 	cout << "\n======================================== Book Catalog ========================================\n";
 	cout << "Title\t\t\tAuthor\t\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
 	cout << book;
-	cout << "============================================ End =============================================\n\n";
+	cout << "============================================ End =============================================\n";
 
 	return;
 }
 
 void showLentBooks() {
-	cout << "======================================== Book Catalog ========================================\n";
-	cout << "Title\tAuthor\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
+	cout << "\n======================================== Book Catalog ========================================\n";
+	cout << "Title\t\t\tAuthor\t\tPublished Year\tEdition\tBorrower\tDays Borrowed\n";
 	for (Book b : bookVector) {
 		if (b.borrower != "None") {
 			cout << b;
@@ -420,11 +421,11 @@ ostream& operator<<(ostream &strm, const vector<Book> &v) {
 }
 
 ostream& operator<<(ostream &strm, const Book &b) {
-	strm << "title: " << b.title <<
-		"\t pubYear: " << b.pubYear <<
-		"\t author: " << b.author <<
-		"\t edition: " << b.edition <<
-		"\t borrower: " << b.borrower <<
-		"\t lentDays: " << b.lentDays << "\n";
+	strm << b.title <<
+		"\t" << b.author <<
+		"\t" << b.pubYear <<
+		"\t\t" << b.edition <<
+		"\t" << b.borrower <<
+		"\t" << b.lentDays << "\n";
 	return strm;
 }
